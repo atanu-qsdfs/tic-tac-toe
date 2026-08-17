@@ -1,0 +1,1494 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>🌈 Ultimate Tic Tac Toe - Mobile Friendly</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Poppins:wght@300;400;500;600;700&family=Righteous:wght@400&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --neon-pink: #ff006e;
+            --neon-blue: #8338ec;
+            --neon-green: #3a86ff;
+            --neon-yellow: #ffbe0b;
+            --neon-orange: #fb5607;
+            --neon-cyan: #06ffa5;
+            --neon-red: #ff4081;
+            --gold: #ffd700;
+            --glass-bg: rgba(255,255,255,0.15);
+            --glass-border: rgba(255,255,255,0.25);
+            --gradient-rainbow: linear-gradient(45deg, #ff0080, #ff8000, #ffff00, #80ff00, #00ff80, #0080ff);
+            --gradient-cosmic: linear-gradient(135deg, #667eea, #f093fb, #f5576c);
+            --gradient-sunset: linear-gradient(45deg, #ff9a9e, #fecfef);
+            --gradient-ocean: linear-gradient(120deg, #a8edea, #fed6e3);
+            --gradient-fire: linear-gradient(45deg, #ff9a56, #ff6b6b);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--gradient-cosmic);
+            background-size: 300% 300%;
+            animation: cosmicShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 10px;
+            overflow-x: hidden;
+            font-size: 16px;
+        }
+
+        @keyframes cosmicShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(255,0,128,0.3) 2px, transparent 2px),
+                radial-gradient(circle at 80% 20%, rgba(131,56,236,0.3) 2px, transparent 2px);
+            background-size: 100px 100px;
+            animation: particleFloat 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-200px); }
+        }
+
+        body::after {
+            content: '💖 ⭐ ✨';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 1.5rem;
+            opacity: 0.2;
+            animation: cuteFloat 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+            word-spacing: 100px;
+            line-height: 100px;
+        }
+
+        @keyframes cuteFloat {
+            0% { transform: translateY(100vh); }
+            100% { transform: translateY(-100vh); }
+        }
+
+        .game-container {
+            background: var(--glass-bg);
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            backdrop-filter: blur(15px);
+            border: 2px solid var(--glass-border);
+            max-width: 100%;
+            width: calc(100% - 20px);
+            margin: 10px auto;
+        }
+
+        .game-title {
+            text-align: center;
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            margin-bottom: 10px;
+            background: var(--gradient-rainbow);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(255,255,255,0.5);
+        }
+
+        .game-subtitle {
+            text-align: center;
+            font-size: clamp(0.9rem, 3vw, 1.2rem);
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .game-content {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .game-board-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            width: 100%;
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, clamp(80px, 30vw, 100px));
+            grid-template-rows: repeat(3, clamp(80px, 30vw, 100px));
+            gap: 6px;
+            background: var(--gradient-fire);
+            padding: 10px;
+            border-radius: 15px;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .cell {
+            background: var(--glass-bg);
+            border: 2px solid var(--glass-border);
+            border-radius: 15px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: clamp(1.8rem, 8vw, 2.5rem);
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            backdrop-filter: blur(10px);
+            font-family: 'Righteous', cursive;
+            min-height: 44px;
+            min-width: 44px;
+        }
+
+        .cell:active {
+            transform: scale(0.95);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .cell.x {
+            color: var(--neon-pink);
+            text-shadow: 0 0 15px var(--neon-pink);
+            background: linear-gradient(135deg, rgba(255,0,110,0.1), rgba(255,0,110,0.05));
+        }
+
+        .cell.o {
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px var(--neon-blue);
+            background: linear-gradient(135deg, rgba(131,56,236,0.1), rgba(131,56,236,0.05));
+        }
+
+        .cell.winning {
+            animation: winningCell 1s ease-in-out infinite;
+        }
+
+        @keyframes winningCell {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px var(--gold); }
+            50% { transform: scale(1.2); box-shadow: 0 0 40px var(--gold); }
+        }
+
+        .cell.placed {
+            animation: cellPlace 0.5s ease;
+        }
+
+        @keyframes cellPlace {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .game-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .control-section {
+            background: var(--glass-bg);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--glass-border);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .control-section h3 {
+            color: rgba(255,255,255,0.95);
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-family: 'Righteous', cursive;
+        }
+
+        .game-mode-buttons, .difficulty-buttons {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn, .difficulty-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            background: var(--gradient-cosmic);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            text-transform: uppercase;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            min-height: 44px;
+            transition: transform 0.2s ease;
+        }
+
+        .mode-btn:active, .difficulty-btn:active {
+            transform: scale(0.95);
+        }
+
+        .mode-btn.active, .difficulty-btn.active {
+            background: var(--gradient-rainbow);
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        .difficulty-btn.easy { background: var(--gradient-sunset); color: #333; }
+        .difficulty-btn.medium { background: var(--gradient-ocean); color: #333; }
+        .difficulty-btn.hard { background: var(--gradient-fire); color: white; }
+
+        .online-section {
+            background: var(--gradient-ocean);
+            border: 3px solid var(--neon-cyan);
+        }
+
+        .room-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--glass-border);
+            border-radius: 10px;
+            background: var(--glass-bg);
+            color: white;
+            font-size: 1rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            margin-bottom: 10px;
+            transition: border-color 0.3s ease;
+        }
+
+        .room-input:focus {
+            outline: none;
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(6,255,165,0.3);
+        }
+
+        .connection-status {
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+        }
+
+        .connection-status.connected { background: linear-gradient(45deg, #4CAF50, #8BC34A); }
+        .connection-status.waiting { background: linear-gradient(45deg, #FF9800, #FFC107); }
+        .connection-status.disconnected { background: linear-gradient(45deg, #F44336, #E91E63); }
+
+        .game-stats {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 12px;
+            background: var(--glass-bg);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--glass-border);
+        }
+
+        .stat-value {
+            display: block;
+            font-size: clamp(1.5rem, 5vw, 2rem);
+            font-weight: 700;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: clamp(0.8rem, 2.5vw, 1rem);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .action-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            text-transform: uppercase;
+            min-height: 44px;
+            transition: transform 0.2s ease;
+        }
+
+        .action-btn:active {
+            transform: scale(0.95);
+        }
+
+        .reset-btn { background: var(--gradient-fire); color: white; }
+        .hint-btn { background: var(--gradient-ocean); color: #333; }
+        .hint-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+        .sound-toggle {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: var(--glass-bg);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border: 2px solid var(--glass-border);
+            color: rgba(255,255,255,0.95);
+            z-index: 1000;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .sound-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .game-status {
+            text-align: center;
+            font-size: clamp(1rem, 4vw, 1.3rem);
+            font-weight: 700;
+            color: rgba(255,255,255,0.95);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            font-family: 'Righteous', cursive;
+        }
+
+        .winner-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(10px);
+        }
+
+        .winner-content {
+            background: var(--gradient-rainbow);
+            padding: 20px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 90vw;
+            width: clamp(280px, 80vw, 400px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .winner-title {
+            font-family: 'Fredoka One', cursive;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .winner-subtitle {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .play-again-btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            min-height: 44px;
+            transition: transform 0.2s ease;
+        }
+
+        .play-again-btn:active {
+            transform: scale(0.95);
+        }
+
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1999;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            animation: confettiFall 4s linear infinite;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+
+        .hint-highlight {
+            animation: hintPulse 2s ease-in-out 2;
+            border: 3px solid var(--gold);
+            box-shadow: 0 0 20px var(--gold);
+        }
+
+        @keyframes hintPulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 0 20px var(--gold); }
+            50% { transform: scale(1.1); box-shadow: 0 0 30px var(--gold); }
+        }
+
+        @media (max-width: 768px) {
+            .game-container {
+                padding: 10px;
+                margin: 5px;
+                border-radius: 15px;
+            }
+
+            .game-board {
+                grid-template-columns: repeat(3, clamp(70px, 28vw, 90px));
+                grid-template-rows: repeat(3, clamp(70px, 28vw, 90px));
+                gap: 5px;
+                padding: 8px;
+            }
+
+            .cell {
+                font-size: clamp(1.5rem, 7vw, 2rem);
+                border-radius: 12px;
+            }
+
+            .game-controls {
+                max-width: 100%;
+            }
+
+            .control-section {
+                padding: 12px;
+            }
+
+            .sound-toggle {
+                width: 44px;
+                height: 44px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
+            }
+
+            .game-container {
+                padding: 8px;
+                border-radius: 12px;
+            }
+
+            .game-title {
+                font-size: clamp(1.5rem, 5vw, 2rem);
+            }
+
+            .game-subtitle {
+                font-size: clamp(0.8rem, 2.5vw, 1rem);
+            }
+
+            .game-board {
+                grid-template-columns: repeat(3, clamp(60px, 27vw, 80px));
+                grid-template-rows: repeat(3, clamp(60px, 27vw, 80px));
+                gap: 4px;
+                padding: 6px;
+            }
+
+            .cell {
+                font-size: clamp(1.2rem, 6vw, 1.8rem);
+                border-radius: 10px;
+            }
+
+            .winner-content {
+                padding: 15px;
+                border-radius: 15px;
+                width: clamp(250px, 85vw, 320px);
+            }
+
+            .winner-title {
+                font-size: clamp(1.5rem, 5vw, 2rem);
+            }
+
+            .winner-subtitle {
+                font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            }
+        }
+
+        @media (hover: none) and (pointer: coarse) {
+            .cell:hover, .mode-btn:hover, .difficulty-btn:hover, .action-btn:hover, .sound-toggle:hover, .play-again-btn:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .cell:active, .mode-btn:active, .difficulty-btn:active, .action-btn:active, .sound-toggle:active, .play-again-btn:active {
+                transform: scale(0.95);
+                background: rgba(255,255,255,0.15);
+            }
+
+            .cell::before, .mode-btn::before, .difficulty-btn::before, .action-btn::before, .play-again-btn::before {
+                display: none;
+            }
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        .cell:focus, .difficulty-btn:focus, .mode-btn:focus, .action-btn:focus, .sound-toggle:focus, .play-again-btn:focus, .room-input:focus {
+            outline: 3px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-contrast: high) {
+            .cell { border-width: 3px; }
+            .cell.x { background: rgba(255,0,110,0.3); }
+            .cell.o { background: rgba(131,56,236,0.3); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <button class="sound-toggle" id="soundToggle" onclick="toggleSound()" aria-label="Toggle sound effects">🔊</button>
+    
+    <div class="game-container">
+        <h1 class="game-title">🌈✨ Tic Tac Toe ✨🌈</h1>
+        <p class="game-subtitle">🎮 Play with AI or Friends!</p>
+        
+        <div class="game-content">
+            <div class="game-board-section">
+                <div class="game-status" id="gameStatus" aria-live="polite">Player X's Turn</div>
+                <div class="game-board" id="gameBoard" role="grid" aria-label="Tic Tac Toe game board">
+                    <div class="cell" data-index="0" role="gridcell" aria-label="Cell 1" tabindex="0"></div>
+                    <div class="cell" data-index="1" role="gridcell" aria-label="Cell 2" tabindex="0"></div>
+                    <div class="cell" data-index="2" role="gridcell" aria-label="Cell 3" tabindex="0"></div>
+                    <div class="cell" data-index="3" role="gridcell" aria-label="Cell 4" tabindex="0"></div>
+                    <div class="cell" data-index="4" role="gridcell" aria-label="Cell 5" tabindex="0"></div>
+                    <div class="cell" data-index="5" role="gridcell" aria-label="Cell 6" tabindex="0"></div>
+                    <div class="cell" data-index="6" role="gridcell" aria-label="Cell 7" tabindex="0"></div>
+                    <div class="cell" data-index="7" role="gridcell" aria-label="Cell 8" tabindex="0"></div>
+                    <div class="cell" data-index="8" role="gridcell" aria-label="Cell 9" tabindex="0"></div>
+                </div>
+            </div>
+            
+            <div class="game-controls">
+                <div class="control-section">
+                    <h3>👤 Players</h3>
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" class="room-input" id="player1Name" placeholder="Player 1" maxlength="15" style="margin-bottom: 0;">
+                        <input type="text" class="room-input" id="player2Name" placeholder="Player 2" maxlength="15" style="margin-bottom: 0;">
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>🎮 Mode</h3>
+                    <div class="game-mode-buttons">
+                        <button class="mode-btn active" id="vsAI" onclick="setGameMode('ai')" aria-pressed="true">🤖 AI</button>
+                        <button class="mode-btn" id="vsPlayer" onclick="setGameMode('player')" aria-pressed="false">👥 Local</button>
+                        <button class="mode-btn" id="vsOnline" onclick="setGameMode('online')" aria-pressed="false">🌐 Online</button>
+                    </div>
+                </div>
+                
+                <div class="control-section online-section" id="onlineSection" style="display: none;">
+                    <h3>🌐 Online Play</h3>
+                    <input type="text" class="room-input" id="playerNameInput" placeholder="Your Name" maxlength="20">
+                    <input type="text" class="room-input" id="roomInput" placeholder="Room Code (e.g., GAME123)" maxlength="10">
+                    <div class="connection-status disconnected" id="connectionStatus">💔 Not Connected</div>
+                    <button class="action-btn" id="joinRoomBtn" onclick="joinRoom()">🚀 Join Room</button>
+                    <button class="action-btn" id="inviteBtn" onclick="generateInviteLink()" style="display: none;">📤 Invite</button>
+                    <div class="invite-link-container" id="inviteLinkContainer" style="display: none;">
+                        <p style="color: rgba(255,255,255,0.9); font-size: 0.8rem; margin-bottom: 10px;">Share this link:</p>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <input type="text" class="room-input" id="inviteLink" readonly style="font-size: 0.8rem; flex: 1;">
+                            <button class="action-btn" onclick="copyInviteLink()">📋</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-section" id="difficultySection">
+                    <h3>🎯 AI Difficulty</h3>
+                    <div class="difficulty-buttons">
+                        <button class="difficulty-btn easy active" onclick="setDifficulty('easy')" aria-pressed="true">😊 Easy</button>
+                        <button class="difficulty-btn medium" onclick="setDifficulty('medium')" aria-pressed="false">😐 Medium</button>
+                        <button class="difficulty-btn hard" onclick="setDifficulty('hard')" aria-pressed="false">😤 Hard</button>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>📊 Stats</h3>
+                    <div class="game-stats">
+                        <div class="stat">
+                            <span class="stat-value" id="playerWins" aria-label="Player wins">0</span>
+                            <span class="stat-label">Player Wins</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="aiWins" aria-label="AI wins">0</span>
+                            <span class="stat-label">AI Wins</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-value" id="draws" aria-label="Draws">0</span>
+                            <span class="stat-label">Draws</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="control-section">
+                    <h3>⚡ Actions</h3>
+                    <div class="action-buttons">
+                        <button class="action-btn reset-btn" onclick="resetGame()" aria-label="Start new game">🔄 New Game</button>
+                        <button class="action-btn hint-btn" id="hintBtn" onclick="getHint()" aria-label="Get hint">💡 Hint</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="winner-modal" id="winnerModal" role="dialog" aria-labelledby="winnerTitle" aria-modal="true">
+        <div class="winner-content">
+            <div class="winner-title" id="winnerTitle">🎉 Victory! 🎉</div>
+            <div class="winner-subtitle" id="winnerSubtitle">Great job!</div>
+            <button class="play-again-btn" onclick="resetGame()" aria-label="Start new game">🎮 Play Again</button>
+        </div>
+    </div>
+
+    <div class="celebration" id="celebration" aria-hidden="true"></div>
+
+    <script>
+        class UltimateTicTacToe {
+            constructor() {
+                this.board = Array(9).fill('');
+                this.currentPlayer = 'X';
+                this.gameMode = 'ai';
+                this.difficulty = 'easy';
+                this.gameActive = true;
+                this.soundEnabled = true;
+                this.stats = { playerWins: 0, aiWins: 0, draws: 0 };
+                this.moveHistory = [];
+                this.gameStartTime = Date.now();
+                this.player1Name = '';
+                this.player2Name = '';
+                this.onlinePlayerName = '';
+                this.opponentName = '';
+                this.isOnline = false;
+                this.roomCode = '';
+                this.playerId = this.generatePlayerId();
+                this.isHost = false;
+                this.opponentConnected = false;
+                this.onlinePlayerSymbol = 'X';
+                this.winningCombinations = [
+                    [0, 1, 2], [3, 4, 5], [6, 7, 8],
+                    [0, 3, 6], [1, 4, 7], [2, 5, 8],
+                    [0, 4, 8], [2, 4, 6]
+                ];
+                this.init();
+                this.setupEventListeners();
+                this.loadStats();
+                this.checkForInviteLink();
+            }
+
+            generatePlayerId() {
+                return 'player_' + Math.random().toString(36).substr(2, 9);
+            }
+
+            playSound(type, options = {}) {
+                if (!this.soundEnabled) return;
+                try {
+                    if (!this.audioContext) {
+                        this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (this.audioContext.state === 'suspended') {
+                        this.audioContext.resume();
+                    }
+                    switch(type) {
+                        case 'move_x': this.createCuteMoveXSound(this.audioContext); break;
+                        case 'move_o': this.createCuteMoveOSound(this.audioContext); break;
+                        case 'win': this.createCuteWinSound(this.audioContext); break;
+                        case 'draw': this.createCuteDrawSound(this.audioContext); break;
+                        case 'button_click': this.createCuteButtonSound(this.audioContext); break;
+                        case 'hover': this.createCuteHoverSound(this.audioContext); break;
+                        case 'invalid_move': this.createCuteErrorSound(this.audioContext); break;
+                        case 'hint': this.createCuteHintSound(this.audioContext); break;
+                        case 'game_start': this.createCuteStartSound(this.audioContext); break;
+                        case 'online_connect': this.createOnlineConnectSound(this.audioContext); break;
+                        case 'online_disconnect': this.createOnlineDisconnectSound(this.audioContext); break;
+                        case 'link_copy': this.createLinkCopySound(this.audioContext); break;
+                    }
+                } catch (error) {
+                    console.warn('Audio not available:', error);
+                }
+            }
+
+            createCuteMoveXSound(audioContext) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(880, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(440, audioContext.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.2);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.2);
+            }
+
+            createCuteMoveOSound(audioContext) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523, audioContext.currentTime);
+                osc.frequency.linearRampToValueAtTime(784, audioContext.currentTime + 0.25);
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + 0.25);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.25);
+            }
+
+            createCuteWinSound(audioContext) {
+                const melody = [523, 659, 784];
+                melody.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.15, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.2);
+                    }, i * 100);
+                });
+            }
+
+            createCuteDrawSound(audioContext) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, audioContext.currentTime);
+                osc.frequency.linearRampToValueAtTime(330, audioContext.currentTime + 0.5);
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.5);
+            }
+
+            createCuteButtonSound(audioContext) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(1000, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(500, audioContext.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.1);
+            }
+
+            createCuteHoverSound(audioContext) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(800, audioContext.currentTime);
+                gain.gain.setValueAtTime(0.05, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.05);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.05);
+            }
+
+            createCuteErrorSound(audioContext) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(300, audioContext.currentTime);
+                osc.frequency.linearRampToValueAtTime(200, audioContext.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.2);
+            }
+
+            createCuteHintSound(audioContext) {
+                const frequencies = [659, 784];
+                frequencies.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.2);
+                    }, i * 80);
+                });
+            }
+
+            createCuteStartSound(audioContext) {
+                const frequencies = [523, 659];
+                frequencies.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.2);
+                    }, i * 80);
+                });
+            }
+
+            createOnlineConnectSound(audioContext) {
+                const frequencies = [440, 554];
+                frequencies.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.2);
+                    }, i * 80);
+                });
+            }
+
+            createOnlineDisconnectSound(audioContext) {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(220, audioContext.currentTime + 0.3);
+                gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.3);
+            }
+
+            createLinkCopySound(audioContext) {
+                const frequencies = [880, 1100];
+                frequencies.forEach((freq, i) => {
+                    setTimeout(() => {
+                        const osc = audioContext.createOscillator();
+                        const gain = audioContext.createGain();
+                        osc.connect(gain);
+                        gain.connect(audioContext.destination);
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+                        gain.gain.setValueAtTime(0.1, audioContext.currentTime);
+                        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
+                        osc.start(audioContext.currentTime);
+                        osc.stop(audioContext.currentTime + 0.1);
+                    }, i * 50);
+                });
+            }
+
+            checkForInviteLink() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const inviteRoom = urlParams.get('room');
+                const inviterName = urlParams.get('inviter');
+                if (inviteRoom) {
+                    this.setGameMode('online');
+                    document.getElementById('roomInput').value = inviteRoom;
+                    if (inviterName) {
+                        const statusElement = document.getElementById('connectionStatus');
+                        statusElement.className = 'connection-status waiting';
+                        statusElement.textContent = `🎮 Join ${decodeURIComponent(inviterName)}!`;
+                    }
+                }
+            }
+
+            generateInviteLink() {
+                const playerName = document.getElementById('playerNameInput').value.trim();
+                const roomCode = document.getElementById('roomInput').value.trim().toUpperCase();
+                if (!playerName || !roomCode) {
+                    this.playSound('invalid_move');
+                    alert('Enter your name and room code!');
+                    return;
+                }
+                this.playSound('button_click');
+                const baseUrl = window.location.origin + window.location.pathname;
+                const inviteUrl = `${baseUrl}?room=${roomCode}&inviter=${encodeURIComponent(playerName)}`;
+                document.getElementById('inviteLink').value = inviteUrl;
+                document.getElementById('inviteLinkContainer').style.display = 'flex';
+            }
+
+            copyInviteLink() {
+                const inviteLink = document.getElementById('inviteLink');
+                inviteLink.select();
+                inviteLink.setSelectionRange(0, 99999);
+                try {
+                    document.execCommand('copy');
+                    this.playSound('link_copy');
+                    const copyBtn = event.target;
+                    copyBtn.textContent = '✅';
+                    setTimeout(() => {
+                        copyBtn.textContent = '📋';
+                    }, 1500);
+                } catch (err) {
+                    this.playSound('invalid_move');
+                    alert('Copy failed. Please copy manually.');
+                }
+            }
+
+            joinRoom() {
+                const roomInput = document.getElementById('roomInput');
+                const playerNameInput = document.getElementById('playerNameInput');
+                const roomCode = roomInput.value.trim().toUpperCase();
+                const playerName = playerNameInput.value.trim();
+                if (!playerName || !roomCode) {
+                    this.playSound('invalid_move');
+                    alert('Enter your name and room code!');
+                    return;
+                }
+                this.playSound('button_click');
+                this.roomCode = roomCode;
+                this.onlinePlayerName = playerName;
+                this.simulateOnlineConnection();
+            }
+
+            simulateOnlineConnection() {
+                const statusElement = document.getElementById('connectionStatus');
+                const joinBtn = document.getElementById('joinRoomBtn');
+                const inviteBtn = document.getElementById('inviteBtn');
+                statusElement.className = 'connection-status waiting';
+                statusElement.innerHTML = '🔄 Connecting... <div class="loading"></div>';
+                joinBtn.disabled = true;
+                setTimeout(() => {
+                    this.isOnline = true;
+                    this.opponentConnected = Math.random() > 0.3;
+                    if (this.opponentConnected) {
+                        const opponentNames = ['Alex', 'Sam', 'Jordan', 'Casey'];
+                        this.opponentName = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+                        statusElement.className = 'connection-status connected';
+                        statusElement.textContent = `💚 Connected with ${this.opponentName}!`;
+                        this.playSound('online_connect');
+                        this.isHost = Math.random() > 0.5;
+                        this.onlinePlayerSymbol = this.isHost ? 'X' : 'O';
+                        this.resetGame();
+                    } else {
+                        statusElement.className = 'connection-status waiting';
+                        statusElement.textContent = '⏳ Waiting for opponent...';
+                        inviteBtn.style.display = 'block';
+                        setTimeout(() => {
+                            const opponentNames = ['Alex', 'Sam', 'Jordan', 'Casey'];
+                            this.opponentName = opponentNames[Math.floor(Math.random() * opponentNames.length)];
+                            this.opponentConnected = true;
+                            statusElement.className = 'connection-status connected';
+                            statusElement.textContent = `💚 ${this.opponentName} joined!`;
+                            this.playSound('online_connect');
+                            this.isHost = true;
+                            this.onlinePlayerSymbol = 'X';
+                            inviteBtn.style.display = 'none';
+                            this.resetGame();
+                        }, 2000);
+                    }
+                    joinBtn.disabled = false;
+                    joinBtn.textContent = '🚪 Leave';
+                    joinBtn.onclick = () => this.leaveRoom();
+                }, 1000);
+            }
+
+            leaveRoom() {
+                this.playSound('online_disconnect');
+                this.isOnline = false;
+                this.opponentConnected = false;
+                this.roomCode = '';
+                const statusElement = document.getElementById('connectionStatus');
+                const joinBtn = document.getElementById('joinRoomBtn');
+                statusElement.className = 'connection-status disconnected';
+                statusElement.textContent = '💔 Disconnected';
+                joinBtn.textContent = '🚀 Join Room';
+                joinBtn.onclick = () => this.joinRoom();
+                this.setGameMode('ai');
+            }
+
+            simulateOpponentMove() {
+                if (!this.gameActive || !this.isOnline || !this.opponentConnected || this.currentPlayer === this.onlinePlayerSymbol) return;
+                setTimeout(() => {
+                    const availableMoves = this.getAvailableMoves();
+                    if (availableMoves.length > 0) {
+                        const randomMove = availableMoves[Math.floor(Math.random() * availableMoves.length)];
+                        this.makeMove(randomMove);
+                    }
+                }, 500);
+            }
+
+            init() {
+                this.updateGameStatus();
+                this.updateStats();
+                this.playSound('game_start');
+            }
+
+            setupEventListeners() {
+                document.querySelectorAll('.cell').forEach((cell, index) => {
+                    cell.addEventListener('click', () => this.makeMove(index));
+                    cell.addEventListener('touchstart', (e) => {
+                        e.preventDefault();
+                        this.makeMove(index);
+                    });
+                    cell.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            this.makeMove(index);
+                        }
+                    });
+                });
+
+                document.getElementById('player1Name').addEventListener('input', (e) => {
+                    this.player1Name = e.target.value;
+                    this.updateGameStatus();
+                });
+
+                document.getElementById('player2Name').addEventListener('input', (e) => {
+                    this.player2Name = e.target.value;
+                    this.updateGameStatus();
+                });
+
+                document.getElementById('playerNameInput').addEventListener('input', (e) => {
+                    this.onlinePlayerName = e.target.value;
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.key >= '1' && e.key <= '9') {
+                        e.preventDefault();
+                        this.makeMove(parseInt(e.key) - 1);
+                    }
+                });
+            }
+
+            makeMove(index) {
+                if (this.board[index] !== '' || !this.gameActive) {
+                    this.playSound('invalid_move');
+                    return;
+                }
+                if (this.isOnline && this.currentPlayer !== this.onlinePlayerSymbol) {
+                    this.playSound('invalid_move');
+                    return;
+                }
+                this.board[index] = this.currentPlayer;
+                this.moveHistory.push({ player: this.currentPlayer, position: index, timestamp: Date.now() });
+                const cell = document.querySelector(`[data-index="${index}"]`);
+                cell.textContent = this.currentPlayer;
+                cell.classList.add(this.currentPlayer.toLowerCase(), 'placed');
+                cell.setAttribute('aria-label', `Cell ${index + 1}, ${this.currentPlayer}`);
+                this.playSound(this.currentPlayer === 'X' ? 'move_x' : 'move_o');
+                if (this.checkWinner()) {
+                    this.handleGameEnd('win');
+                } else if (this.board.every(cell => cell !== '')) {
+                    this.handleGameEnd('draw');
+                } else {
+                    this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+                    this.updateGameStatus();
+                    if (this.gameMode === 'ai' && this.currentPlayer === 'O') {
+                        setTimeout(() => this.makeAIMove(), 500);
+                    } else if (this.gameMode === 'online') {
+                        this.simulateOpponentMove();
+                    }
+                }
+            }
+
+            checkWinner() {
+                for (let combination of this.winningCombinations) {
+                    const [a, b, c] = combination;
+                    if (this.board[a] && this.board[a] === this.board[b] && this.board[a] === this.board[c]) {
+                        combination.forEach(index => {
+                            document.querySelector(`[data-index="${index}"]`).classList.add('winning');
+                        });
+                        return this.board[a];
+                    }
+                }
+                return null;
+            }
+
+            handleGameEnd(result) {
+                this.gameActive = false;
+                if (result === 'win') {
+                    const winner = this.checkWinner();
+                    this.playSound('win');
+                    this.createEnhancedCelebration();
+                    if (this.gameMode === 'ai') {
+                        const playerName = this.player1Name || 'Player';
+                        if (winner === 'X') {
+                            this.stats.playerWins++;
+                            this.showWinnerModal(`🎉 ${playerName} Wins!`, `You beat the AI!`);
+                        } else {
+                            this.stats.aiWins++;
+                            this.showWinnerModal('🤖 AI Wins!', `Try again!`);
+                        }
+                    } else if (this.gameMode === 'online') {
+                        if (winner === this.onlinePlayerSymbol) {
+                            this.stats.playerWins++;
+                            this.showWinnerModal(`🎉 ${this.onlinePlayerName} Wins!`, `You defeated ${this.opponentName}!`);
+                        } else {
+                            this.stats.aiWins++;
+                            this.showWinnerModal(`🎉 ${this.opponentName} Wins!`, `Better luck next time!`);
+                        }
+                    } else {
+                        const player1Name = this.player1Name || 'Player 1';
+                        const player2Name = this.player2Name || 'Player 2';
+                        const winnerName = winner === 'X' ? player1Name : player2Name;
+                        this.stats.playerWins++;
+                        this.showWinnerModal(`🎉 ${winnerName} Wins!`, `Great job!`);
+                    }
+                } else {
+                    this.stats.draws++;
+                    this.playSound('draw');
+                    this.createDrawCelebration();
+                    this.showWinnerModal('🤝 Draw!', 'Great game!');
+                }
+                this.saveStats();
+                this.updateStats();
+            }
+
+            makeAIMove() {
+                if (!this.gameActive || this.currentPlayer !== 'O') return;
+                let move = this.difficulty === 'easy' ? this.getRandomMove() :
+                          this.difficulty === 'medium' ? this.getMediumMove() :
+                          this.getHardMove();
+                if (move !== -1) {
+                    this.makeMove(move);
+                }
+            }
+
+            getRandomMove() {
+                const availableMoves = this.getAvailableMoves();
+                return availableMoves[Math.floor(Math.random() * availableMoves.length)];
+            }
+
+            getMediumMove() {
+                return Math.random() < 0.6 ? this.getStrategicMove() : this.getRandomMove();
+            }
+
+            getHardMove() {
+                return Math.random() < 0.8 ? this.getStrategicMove() : this.getRandomMove();
+            }
+
+            getStrategicMove() {
+                for (let i = 0; i < 9; i++) {
+                    if (this.board[i] === '') {
+                        this.board[i] = 'O';
+                        if (this.checkWinner() === 'O') {
+                            this.board[i] = '';
+                            return i;
+                        }
+                        this.board[i] = '';
+                    }
+                }
+                for (let i = 0; i < 9; i++) {
+                    if (this.board[i] === '') {
+                        this.board[i] = 'X';
+                        if (this.checkWinner() === 'X') {
+                            this.board[i] = '';
+                            return i;
+                        }
+                        this.board[i] = '';
+                    }
+                }
+                if (this.board[4] === '') return 4;
+                const corners = [0, 2, 6, 8];
+                const availableCorners = corners.filter(i => this.board[i] === '');
+                if (availableCorners.length > 0) {
+                    return availableCorners[Math.floor(Math.random() * availableCorners.length)];
+                }
+                return this.getRandomMove();
+            }
+
+            getHint() {
+                if (!this.gameActive || this.currentPlayer !== 'X' || this.gameMode === 'online') {
+                    this.playSound('invalid_move');
+                    return;
+                }
+                this.playSound('hint');
+                const availableMoves = this.getAvailableMoves();
+                const bestMove = this.getStrategicMove();
+                if (bestMove !== undefined) {
+                    const cell = document.querySelector(`[data-index="${bestMove}"]`);
+                    cell.classList.add('hint-highlight');
+                    setTimeout(() => {
+                        cell.classList.remove('hint-highlight');
+                    }, 2000);
+                }
+            }
+
+            setGameMode(mode) {
+                this.playSound('button_click');
+                this.gameMode = mode;
+                document.querySelectorAll('.mode-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
+                });
+                document.getElementById(`vs${mode.charAt(0).toUpperCase() + mode.slice(1)}`).classList.add('active');
+                document.getElementById(`vs${mode.charAt(0).toUpperCase() + mode.slice(1)}`).setAttribute('aria-pressed', 'true');
+                document.getElementById('difficultySection').style.display = mode === 'ai' ? 'block' : 'none';
+                document.getElementById('onlineSection').style.display = mode === 'online' ? 'block' : 'none';
+                document.getElementById('hintBtn').style.display = mode === 'ai' ? 'block' : 'none';
+                const aiWinsLabel = document.querySelector('#aiWins').nextElementSibling;
+                aiWinsLabel.textContent = mode === 'online' ? 'Opponent Wins' : mode === 'player' ? 'Player 2 Wins' : 'AI Wins';
+                this.resetGame();
+            }
+
+            setDifficulty(difficulty) {
+                this.playSound('button_click');
+                this.difficulty = difficulty;
+                document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.setAttribute('aria-pressed', 'false');
+                });
+                document.querySelector(`.difficulty-btn.${difficulty}`).classList.add('active');
+                document.querySelector(`.difficulty-btn.${difficulty}`).setAttribute('aria-pressed', 'true');
+                this.resetGame();
+            }
+
+            resetGame() {
+                this.playSound('button_click');
+                this.board = Array(9).fill('');
+                this.currentPlayer = 'X';
+                this.gameActive = true;
+                this.moveHistory = [];
+                this.gameStartTime = Date.now();
+                document.querySelectorAll('.cell').forEach((cell, index) => {
+                    cell.textContent = '';
+                    cell.className = 'cell';
+                    cell.setAttribute('aria-label', `Cell ${index + 1}`);
+                });
+                document.getElementById('winnerModal').style.display = 'none';
+                document.getElementById('celebration').innerHTML = '';
+                this.updateGameStatus();
+                this.playSound('game_start');
+            }
+
+            updateGameStatus() {
+                const status = document.getElementById('gameStatus');
+                if (this.gameActive) {
+                    if (this.gameMode === 'ai') {
+                        status.textContent = this.currentPlayer === 'X' ? `${this.player1Name || 'Player'}'s Turn` : 'AI Thinking...';
+                    } else if (this.gameMode === 'online') {
+                        status.textContent = this.isOnline && this.opponentConnected ?
+                            (this.currentPlayer === this.onlinePlayerSymbol ? `${this.onlinePlayerName}'s Turn` : `${this.opponentName}'s Turn`) :
+                            'Waiting for Connection...';
+                    } else {
+                        const currentPlayerName = this.currentPlayer === 'X' ? (this.player1Name || 'Player 1') : (this.player2Name || 'Player 2');
+                        status.textContent = `${currentPlayerName}'s Turn`;
+                    }
+                } else {
+                    status.textContent = 'Game Over';
+                }
+            }
+
+            showWinnerModal(title, subtitle) {
+                document.getElementById('winnerTitle').textContent = title;
+                document.getElementById('winnerSubtitle').textContent = subtitle;
+                document.getElementById('winnerModal').style.display = 'flex';
+            }
+
+            createEnhancedCelebration() {
+                const celebration = document.getElementById('celebration');
+                celebration.innerHTML = '';
+                const colors = ['#ff006e', '#8338ec', '#3a86ff', '#ffbe0b'];
+                for (let i = 0; i < 20; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.animationDelay = Math.random() * 2 + 's';
+                        celebration.appendChild(confetti);
+                        setTimeout(() => {
+                            if (confetti.parentNode) confetti.parentNode.removeChild(confetti);
+                        }, 4000);
+                    }, i * 50);
+                }
+            }
+
+            createDrawCelebration() {
+                const celebration = document.getElementById('celebration');
+                celebration.innerHTML = '';
+                const colors = ['#a8edea', '#fed6e3'];
+                for (let i = 0; i < 15; i++) {
+                    setTimeout(() => {
+                        const confetti = document.createElement('div');
+                        confetti.className = 'confetti';
+                        confetti.style.left = Math.random() * 100 + '%';
+                        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        confetti.style.animationDelay = Math.random() * 2 + 's';
+                        celebration.appendChild(confetti);
+                        setTimeout(() => {
+                            if (confetti.parentNode) confetti.parentNode.removeChild(confetti);
+                        }, 4000);
+                    }, i * 60);
+                }
+            }
+
+            updateStats() {
+                document.getElementById('playerWins').textContent = this.stats.playerWins;
+                document.getElementById('aiWins').textContent = this.stats.aiWins;
+                document.getElementById('draws').textContent = this.stats.draws;
+            }
+
+            saveStats() {
+                localStorage.setItem('ticTacToeStats', JSON.stringify(this.stats));
+            }
+
+            loadStats() {
+                const saved = localStorage.getItem('ticTacToeStats');
+                if (saved) {
+                    this.stats = JSON.parse(saved);
+                    this.updateStats();
+                }
+            }
+
+            toggleSound() {
+                this.soundEnabled = !this.soundEnabled;
+                const soundToggle = document.getElementById('soundToggle');
+                soundToggle.textContent = this.soundEnabled ? '🔊' : '🔇';
+                soundToggle.setAttribute('aria-label', this.soundEnabled ? 'Mute sound effects' : 'Enable sound effects');
+                if (this.soundEnabled) this.playSound('button_click');
+            }
+
+            getAvailableMoves() {
+                return this.board.map((cell, index) => cell === '' ? index : null).filter(val => val !== null);
+            }
+        }
+
+        let game;
+
+        function initGame() {
+            game = new UltimateTicTacToe();
+        }
+
+        function setGameMode(mode) {
+            game.setGameMode(mode);
+        }
+
+        function setDifficulty(difficulty) {
+            game.setDifficulty(difficulty);
+        }
+
+        function resetGame() {
+            game.resetGame();
+        }
+
+        function getHint() {
+            game.getHint();
+        }
+
+        function toggleSound() {
+            game.toggleSound();
+        }
+
+        function joinRoom() {
+            game.joinRoom();
+        }
+
+        function generateInviteLink() {
+            game.generateInviteLink();
+        }
+
+        function copyInviteLink() {
+            game.copyInviteLink();
+        }
+
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>
